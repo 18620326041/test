@@ -1,0 +1,1897 @@
+{
+	"info": {
+		"_postman_id": "5748a27f-6ee5-4ccf-888b-740c864b5c84",
+		"name": "认证店认证申请--认证店形象改造",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "登录dms",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData= JSON.parse(responseBody);\r",
+							"pm.collectionVariables.set(\"dms_token\",\"Bearer\"+jsonData.data.token.access_token);\r",
+							"pm.collectionVariables.set(\"companyId\",jsonData.data.token.currentUser.companyId);\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.globals.clear();\r",
+							"pm.collectionVariables.clear();"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"{{dms_username}}\",\r\n    \"password\": \"{{dms_password}}\",\r\n    \"clientId\": \"client_jv\",\r\n    \"clientSecret\": \"888888\",\r\n    \"systemCode\": \"XT000002\",\r\n    \"showValidateCodeFlag\": 1\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{url_dms}}/api/saas-mpf-admin/user/passwordLogin"
+			},
+			"response": []
+		},
+		{
+			"name": "切换经销商",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData= JSON.parse(responseBody);\r",
+							"pm.collectionVariables.set(\"dms_token\",\"Bearer\"+jsonData.data.token.access_token);\r",
+							"pm.collectionVariables.set(\"employeeid\",jsonData.data.token.currentUser.employee.id);\r",
+							"pm.collectionVariables.set(\"companyId\",jsonData.data.token.currentUser.companyId);\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{dms_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url_dms}}/api/saas-mpf-admin/user/changeDmsLogin?companyId={{QcompanyId}}",
+					"host": [
+						"{{url_dms}}"
+					],
+					"path": [
+						"api",
+						"saas-mpf-admin",
+						"user",
+						"changeDmsLogin"
+					],
+					"query": [
+						{
+							"key": "companyId",
+							"value": "{{QcompanyId}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "查询销售组织",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData= JSON.parse(responseBody);\r",
+							"pm.collectionVariables.set(\"saleOrgCode1\",jsonData.data[0].saleOrgCode);\r",
+							"pm.collectionVariables.set(\"saleOrgName1\",jsonData.data[0].saleOrgName);\r",
+							"pm.collectionVariables.set(\"saleOrgCode2\",jsonData.data[0].leafList[0].saleOrgCode);\r",
+							"pm.collectionVariables.set(\"saleOrgName2\",jsonData.data[0].leafList[0].saleOrgName);\r",
+							"pm.collectionVariables.set(\"saleOrgCode3\",jsonData.data[0].leafList[0].leafList[0].saleOrgCode);\r",
+							"pm.collectionVariables.set(\"saleOrgName3\",jsonData.data[0].leafList[0].leafList[0].saleOrgName);\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{dms_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{url_dms}}/api/saas-dms-admin/dmsSaleOrg/treeView"
+			},
+			"response": []
+		},
+		{
+			"name": "创建客户",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							"var jsonData= JSON.parse(responseBody);\r",
+							"pm.collectionVariables.set(\"applyNo\",jsonData.data);\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"\r",
+							"function GetRandomNum(Min,Max){\r",
+							"    var Range=Max-Min;\r",
+							"    var Rand=Math.random();\r",
+							"    return(Min+Math.round(Rand*Range));\r",
+							"}\r",
+							"var num=GetRandomNum(1000000000,9999999999);\r",
+							"var chars=pm.environment.get(\"number\")\r",
+							"chars=Number(chars)+1\r",
+							"pm.environment.set(\"number\",chars);\r",
+							"pm.collectionVariables.set(\"creditCode\",num);\r",
+							"pm.collectionVariables.set(\"storeName\",'newman自动执行'+chars+'--接口')\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{dms_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"companyId\": {{companyId}},\r\n    \"tenantId\": 1343,\r\n    \"sourceType\": 3,\r\n    \"deleted\": 0,\r\n    \"storeName\": \"{{storeName}}\",\r\n    \"storeCode\": null,\r\n    \"isVip\": 0,\r\n    \"isOffical\": 1,\r\n    \"storeType\": \"\",\r\n    \"tradeType\": \"1\",\r\n    \"storeStatus\": \"1\",\r\n    \"companyName\": \"{{storeName}}\",\r\n    \"provinceId\": 1561,\r\n    \"cityId\": 17,\r\n    \"districtId\": 1584,\r\n    \"provinceName\": \"湖北省\",\r\n    \"cityName\": \"武汉市\",\r\n    \"districtName\": \"洪山区\",\r\n    \"creditCode\": \"{{creditCode}}\",\r\n    \"foundedTimeStamp\": 1635696000000,\r\n    \"termOfOperationStamp\": 1638201600000,\r\n    \"sellerId\": \"{{employeeid}}\",\r\n    \"area\": [\r\n        1561,\r\n        17,\r\n        1584\r\n    ],\r\n    \"address\": \"东逸南路东逸南路\",\r\n    \"remark\": \"\",\r\n    \"attachList\": [],\r\n    \"createBy\": \"\",\r\n    \"createByStr\": \"\",\r\n    \"createTime\": \"\",\r\n    \"contactList\": [\r\n        {\r\n            \"contactName\": \"认证店形象改造\",\r\n            \"contactPhone\": \"13805965443\",\r\n            \"email\": \"\",\r\n            \"remark\": \"\",\r\n            \"wechatId\": \"\"\r\n        }\r\n    ],\r\n    \"longitude\": 114.415366,\r\n    \"latitude\": 30.481248,\r\n    \"attr1\": \"\",\r\n    \"attr2\": \"\",\r\n    \"attr3\": \"\",\r\n    \"salesCode\": [\r\n        \"JXS101361\",\r\n        \"XSDQ0001\",\r\n        \"XSZ0001\"\r\n    ],\r\n    \"salesName\": [],\r\n    \"firstSaleOrgCode\": \"{{saleOrgCode1}}\",\r\n    \"firstSaleOrgName\": \"{{saleOrgName1}}\",\r\n    \"secondSaleOrgCode\": \"{{saleOrgCode2}}\",\r\n    \"secondSaleOrgName\": \"{{saleOrgName2}}\",\r\n    \"thirdSaleOrgCode\": \"{{saleOrgCode3}}\",\r\n    \"thirdSaleOrgName\": \"{{saleOrgName3}}\",\r\n    \"isActiveStr\": \"\",\r\n    \"officialTime\": \"\",\r\n    \"customerGroupId\": null,\r\n    \"areaStr\": [\r\n        \"湖北省\",\r\n        \"武汉市\",\r\n        \"洪山区\"\r\n    ],\r\n    \"foundedTime\": \"2021-11-01 00:00:00\",\r\n    \"termOfOperation\": \"2021-11-30 00:00:00\",\r\n    \"qualificationPicturesList\":[\r\n        {\r\n            \"attachName\":\"map合同导出 (1).pdf\",\r\n            \"attachUrl\":\"https://image-test.fuchuang.com/stg/6b561102_map%E5%90%88%E5%90%8C%E5%AF%BC%E5%87%BA%20%281%2920211209182621.pdf\"\r\n        }\r\n    ],\r\n    \"storeTitlePicturesList\":[\r\n        {\r\n            \"attachName\":\"9ba3140959ea0d4195925be18247803d.jpeg\",\r\n            \"attachUrl\":\"https://image-test.fuchuang.com/stg/c54b7f0d_9ba3140959ea0d4195925be18247803d20211209182627.jpeg\"\r\n        }\r\n    ],\r\n    \"receptionAreaPicturesList\":[\r\n         {\r\n            \"attachName\":\"9ba3140959ea0d4195925be18247803d.jpeg\",\r\n            \"attachUrl\":\"https://image-test.fuchuang.com/stg/c54b7f0d_9ba3140959ea0d4195925be18247803d20211209182627.jpeg\"\r\n        }\r\n    ],\r\n    \"relaxAreaPicturesList\":[\r\n\r\n    ],\r\n    \"maintainAreaPicturesList\":[\r\n\r\n    ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{url_dms}}/api/saas-dms-admin/dmsStoreInfo/save"
+			},
+			"response": []
+		},
+		{
+			"name": "查询客户信息",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData= JSON.parse(responseBody);\r",
+							"pm.collectionVariables.set(\"storeCode\",jsonData.data.storeCode);\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{dms_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"sourceType\": 3,\r\n    \"id\": \"{{applyNo}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{url_dms}}/api/saas-dms-admin/dmsStoreInfo/detailinfo"
+			},
+			"response": []
+		},
+		{
+			"name": "查询门店标签",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData= JSON.parse(responseBody);\r",
+							"pm.collectionVariables.set(\"serviceName\", jsonData.data[0].serviceName);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{dms_token}}",
+						"type": "text"
+					}
+				],
+				"url": "{{url_dms}}/api/saas-dms-admin/storeCertified/storeLabelList"
+			},
+			"response": []
+		},
+		{
+			"name": "查询服务范围",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData= JSON.parse(responseBody);\r",
+							"pm.collectionVariables.set(\"serviceRange\", jsonData.data[0].name);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{dms_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{url_dms}}/api/saas-mpf-product/admin/businessCategory/getAll"
+			},
+			"response": []
+		},
+		{
+			"name": "创建门店申请基础信息",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData= JSON.parse(responseBody);\r",
+							"pm.collectionVariables.set(\"dataid\",jsonData.data.id);\r",
+							"pm.collectionVariables.set(\"dataapplyNo\",jsonData.data.applyNo);\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{dms_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"applyStatus\": \"\",\r\n    \"storeName\": \"{{storeName}}\",\r\n    \"relatedDistributor\": \"{{saleOrgName1}}\",\r\n    \"storeAbbreviationName\": \"{{storeName}}\",\r\n    \"contactName\": \"还点测试1\",\r\n    \"contactNum\": \"13805965443\",\r\n    \"relatedDistributorCode\": \"{{saleOrgCode1}}\",\r\n    \"applyStoreType\": 1,\r\n    \"emailAddress\": \"\",\r\n    \"sellerName\": \"18620326047\",\r\n    \"tradeTypeStr\": \"美孚1号车养护4445555\",\r\n    \"customerName\": \"还点测试3\",\r\n    \"businessDistrictType\": 1,\r\n    \"address\": \"东逸南路东逸南路\",\r\n    \"customerCode\": \"{{storeCode}}\",\r\n    \"maintainQualifications\": 2,\r\n    \"longitude\": 114.415366,\r\n    \"storeLabel\": \"[\\\"{{serviceName}}\\\"]\",\r\n    \"serviceRange\": \"[\\\"{{serviceRange}}\\\"]\",\r\n    \"latitude\": 30.481248,\r\n    \"storeCode\": \"{{storeCode}}\",\r\n    \"provinceId\": 1561,\r\n    \"cityId\": 17,\r\n    \"districtId\": 1584,\r\n    \"provinceName\": \"湖北省\",\r\n    \"cityName\": \"武汉市\",\r\n    \"districtName\": \"洪山区\",\r\n    \"relatedStoreId\": {{applyNo}}\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{url_dms}}/api/dsr-mobility/storeCertified/create/baseInfo"
+			},
+			"response": []
+		},
+		{
+			"name": "创建门店申请详细信息",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{dms_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"companyName\": \"{{storeName}}\",\r\n    \"creditCode\": \"123123\",\r\n    \"foundedTime\": 1635696000000,\r\n    \"termOfOperation\": 1638201600000,\r\n    \"managementType\": 1,\r\n    \"storeArea\": \"12\",\r\n    \"technicianNum\": \"12\",\r\n    \"liftingMachineNum\": \"12\",\r\n    \"washerNum\": \"12\",\r\n    \"otherEmployeeNum\": \"12\",\r\n    \"invoiceType\": 1,\r\n    \"taxNo\": \"123123\",\r\n    \"companyBank\": \"\",\r\n    \"bankAccount\": \"\",\r\n    \"taxId\": \"\",\r\n    \"taxRatio\": 0,\r\n    \"comAddress\": \"\",\r\n    \"taxTelephone\": \"\",\r\n    \"mobilUltimateBbl\": \"12\",\r\n    \"mobilHighQualityBbl\": \"12\",\r\n    \"mobilStandardBbl\": \"12\",\r\n    \"mobilYearlyBbl\": 36,\r\n    \"cooperationRank\": \"大\",\r\n    \"cooperationReason\": \"12\",\r\n    \"investmentReason\": \"12\",\r\n    \"positionDescribe\": \"12\",\r\n    \"remark\": \"\",\r\n    \"comProvinceId\": \"\",\r\n    \"comCityId\": \"\",\r\n    \"comDistrictId\": \"\",\r\n    \"comProvinceName\": \"\",\r\n    \"comCityName\": \"\",\r\n    \"comDistrictName\": \"\",\r\n    \"qualificationPictures\": \"[[],[\\\"https://image-test.fuchuang.com/lpt/c54b7f0d_9ba3140959ea0d4195925be18247803d20211126154447.jpeg\\\"]]\",\r\n    \"storeTitlePictures\": \"[\\\"https://image-test.fuchuang.com/lpt/c54b7f0d_9ba3140959ea0d4195925be18247803d20211126154506.jpeg\\\"]\",\r\n    \"receptionAreaPictures\": \"[\\\"https://image-test.fuchuang.com/lpt/c54b7f0d_9ba3140959ea0d4195925be18247803d20211126154510.jpeg\\\"]\",\r\n    \"relaxAreaPictures\": \"[\\\"https://image-test.fuchuang.com/lpt/c54b7f0d_9ba3140959ea0d4195925be18247803d20211126154513.jpeg\\\"]\",\r\n    \"maintainAreaPictures\": \"[\\\"https://image-test.fuchuang.com/lpt/c54b7f0d_9ba3140959ea0d4195925be18247803d20211126154517.jpeg\\\"]\",\r\n    \"relatedStoreId\": {{applyNo}},\r\n    \"applyCode\": \"{{dataapplyNo}}\",\r\n    \"applyId\": {{dataid}}\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{url_dms}}/api/saas-dms-admin/storeCertified/saveDetailInfo"
+			},
+			"response": []
+		},
+		{
+			"name": "提交评估报告",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{dms_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\r\n    {\r\n        \"itemOptions\": [\r\n            {\r\n                \"optionId\": 4,\r\n                \"itemId\": 1,\r\n                \"standard\": 1,\r\n                \"optionScore\": 4,\r\n                \"isSelected\": 1,\r\n                \"optionIndex\": \"4\"\r\n            },\r\n            {\r\n                \"optionId\": 8,\r\n                \"itemId\": 2,\r\n                \"standard\": 1,\r\n                \"optionScore\": 4,\r\n                \"isSelected\": 1,\r\n                \"optionIndex\": \"4\"\r\n            },\r\n            {\r\n                \"optionId\": 12,\r\n                \"itemId\": 3,\r\n                \"standard\": 1,\r\n                \"optionScore\": 4,\r\n                \"isSelected\": 1,\r\n                \"optionIndex\": \"4\"\r\n            }\r\n        ],\r\n        \"secondLevelCode\": \"SEC001\",\r\n        \"applyId\": {{dataid}}\r\n    },\r\n    {\r\n        \"itemOptions\": [\r\n            {\r\n                \"optionId\": 16,\r\n                \"itemId\": 4,\r\n                \"standard\": 1,\r\n                \"optionScore\": 4,\r\n                \"isSelected\": 1,\r\n                \"optionIndex\": \"4\"\r\n            },\r\n            {\r\n                \"optionId\": 20,\r\n                \"itemId\": 5,\r\n                \"standard\": 1,\r\n                \"optionScore\": 4,\r\n                \"isSelected\": 1,\r\n                \"optionIndex\": \"4\"\r\n            }\r\n        ],\r\n        \"secondLevelCode\": \"SEC002\",\r\n        \"applyId\": {{dataid}}\r\n    },\r\n    {\r\n        \"itemOptions\": [\r\n            {\r\n                \"optionId\": 24,\r\n                \"itemId\": 6,\r\n                \"standard\": 1,\r\n                \"optionScore\": 4,\r\n                \"isSelected\": 1,\r\n                \"optionIndex\": \"4\"\r\n            },\r\n            {\r\n                \"optionId\": 28,\r\n                \"itemId\": 7,\r\n                \"standard\": 1,\r\n                \"optionScore\": 4,\r\n                \"isSelected\": 1,\r\n                \"optionIndex\": \"4\"\r\n            },\r\n            {\r\n                \"optionId\": 32,\r\n                \"itemId\": 8,\r\n                \"standard\": 1,\r\n                \"optionScore\": 4,\r\n                \"isSelected\": 1,\r\n                \"optionIndex\": \"4\"\r\n            }\r\n        ],\r\n        \"secondLevelCode\": \"SEC003\",\r\n        \"applyId\": {{dataid}}\r\n    },\r\n    {\r\n        \"itemOptions\": [\r\n            {\r\n                \"optionId\": 36,\r\n                \"itemId\": 9,\r\n                \"standard\": 1,\r\n                \"optionScore\": 4,\r\n                \"isSelected\": 1,\r\n                \"optionIndex\": \"4\"\r\n            },\r\n            {\r\n                \"optionId\": 40,\r\n                \"itemId\": 10,\r\n                \"standard\": 1,\r\n                \"optionScore\": 4,\r\n                \"isSelected\": 1,\r\n                \"optionIndex\": \"4\"\r\n            },\r\n            {\r\n                \"optionId\": 44,\r\n                \"itemId\": 11,\r\n                \"standard\": 1,\r\n                \"optionScore\": 4,\r\n                \"isSelected\": 1,\r\n                \"optionIndex\": \"4\"\r\n            },\r\n            {\r\n                \"optionId\": 48,\r\n                \"itemId\": 12,\r\n                \"standard\": 1,\r\n                \"optionScore\": 4,\r\n                \"isSelected\": 1,\r\n                \"optionIndex\": \"4\"\r\n            },\r\n            {\r\n                \"optionId\": 52,\r\n                \"itemId\": 13,\r\n                \"standard\": 1,\r\n                \"optionScore\": 4,\r\n                \"isSelected\": 1,\r\n                \"optionIndex\": \"4\"\r\n            },\r\n            {\r\n                \"optionId\": 56,\r\n                \"itemId\": 14,\r\n                \"standard\": 1,\r\n                \"optionScore\": 4,\r\n                \"isSelected\": 1,\r\n                \"optionIndex\": \"4\"\r\n            }\r\n        ],\r\n        \"secondLevelCode\": \"SEC004\",\r\n        \"applyId\": {{dataid}}\r\n    },\r\n    {\r\n        \"itemOptions\": [\r\n            {\r\n                \"optionId\": 58,\r\n                \"itemId\": 15,\r\n                \"standard\": 1,\r\n                \"optionScore\": 4,\r\n                \"isSelected\": 1,\r\n                \"optionIndex\": \"4\"\r\n            },\r\n            {\r\n                \"optionId\": 60,\r\n                \"itemId\": 16,\r\n                \"standard\": 1,\r\n                \"optionScore\": 4,\r\n                \"isSelected\": 1,\r\n                \"optionIndex\": \"4\"\r\n            }\r\n        ],\r\n        \"secondLevelCode\": \"SEC005\",\r\n        \"applyId\": {{dataid}}\r\n    },\r\n    {\r\n        \"itemOptions\": [\r\n            {\r\n                \"optionId\": 62,\r\n                \"itemId\": 17,\r\n                \"standard\": 1,\r\n                \"optionScore\": 4,\r\n                \"isSelected\": 1,\r\n                \"optionIndex\": \"4\"\r\n            },\r\n            {\r\n                \"optionId\": 66,\r\n                \"itemId\": 18,\r\n                \"standard\": 1,\r\n                \"optionScore\": 4,\r\n                \"isSelected\": 1,\r\n                \"optionIndex\": \"4\"\r\n            },\r\n            {\r\n                \"optionId\": 69,\r\n                \"itemId\": 19,\r\n                \"standard\": 1,\r\n                \"optionScore\": 4,\r\n                \"isSelected\": 1,\r\n                \"optionIndex\": \"4\"\r\n            },\r\n            {\r\n                \"optionId\": 71,\r\n                \"itemId\": 20,\r\n                \"standard\": 1,\r\n                \"optionScore\": 4,\r\n                \"isSelected\": 1,\r\n                \"optionIndex\": \"4\"\r\n            },\r\n            {\r\n                \"optionId\": 73,\r\n                \"itemId\": 21,\r\n                \"standard\": 1,\r\n                \"optionScore\": 4,\r\n                \"isSelected\": 1,\r\n                \"optionIndex\": \"4\"\r\n            }\r\n        ],\r\n        \"secondLevelCode\": \"SEC006\",\r\n        \"applyId\":{{dataid}}\r\n    }\r\n]",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{url_dms}}/api/saas-dms-admin/storeCertified/submitEvaluationReportPC"
+			},
+			"response": []
+		},
+		{
+			"name": "提交门店评估",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{dms_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"applyNo\":\"{{dataapplyNo}}\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{url_dms}}/api/saas-dms-admin/storeCertified/submitStoreCertified"
+			},
+			"response": []
+		},
+		{
+			"name": "销售内勤审批",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{dms_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"applyNo\": \"{{dataapplyNo}}\",\r\n    \"opinion\": \"测试\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{url_dms}}/api/saas-dms-admin/storeCertified/audit/assistant/pass"
+			},
+			"response": []
+		},
+		{
+			"name": "登录fc系统",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData= JSON.parse(responseBody);\r",
+							"pm.collectionVariables.set(\"fc_token\",\"Bearer\"+jsonData.data.token.access_token);\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"{{fc_username1}}\",\r\n    \"password\": \"{{fc_password1}}\",\r\n    \"clientId\": \"client_fc\",\r\n    \"clientSecret\": \"888888\",\r\n    \"systemCode\": \"XT000001\",\r\n    \"showValidateCodeFlag\": 1\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{url_erp}}/api/fc-uap/user/passwordLogin"
+			},
+			"response": []
+		},
+		{
+			"name": "门店招商顾问审批",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{fc_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"applyNo\": \"{{dataapplyNo}}\",\r\n    \"opinion\": \"测试\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{url_erp}}/api/jv-dms-backend/storeCertified/managerAuditPass"
+			},
+			"response": []
+		},
+		{
+			"name": "获取客户地址信息",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData= JSON.parse(responseBody);\r",
+							"pm.collectionVariables.set(\"Addressid\",jsonData.data.id);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{dms_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"storeId\": {{applyNo}},\r\n    \"addressType\": 3\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{url_dms}}/api/saas-dms-admin/sale/queryDefaultAddress"
+			},
+			"response": []
+		},
+		{
+			"name": "查询资源列表",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData= JSON.parse(responseBody);\r",
+							"pm.collectionVariables.set(\"marketResourceCode\",jsonData.data.list[0].marketResourceCode);\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{dms_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"current\": 1,\r\n    \"size\": 10,\r\n    \"supplierCode\": \"{{supplierCode}}\",\r\n    \"cityId\": 17,\r\n    \"dealerId\": {{companyId}},\r\n    \"districtId\": 1584,\r\n    \"provinceId\": 1561,\r\n    \"resourceTypeId\": 2,\r\n    \"storeType\": 1\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{url_dms}}/api/saas-dms-admin/resourceApply/apply/resource/list"
+			},
+			"response": []
+		},
+		{
+			"name": "创建大型设备资源申请",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData= JSON.parse(responseBody);\r",
+							"pm.collectionVariables.set(\"applyOrderCode\",jsonData.data);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{dms_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"resourceSupplierCode\": \"{{supplierCode}}\",\r\n    \"resourceSupplierName\": \"杨茜的测试供应商\",\r\n    \"resourceTypeId\": 2,\r\n    \"storeId\": {{applyNo}},\r\n    \"receiveAddressId\": {{Addressid}},\r\n    \"applyResourceItems\": [\r\n        {\r\n            \"marketResourceCode\": \"{{marketResourceCode}}\",\r\n            \"amount\": 5\r\n        }\r\n    ],\r\n    \"applyCode\": \"\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{url_dms}}/api/saas-dms-admin/resourceApply/create"
+			},
+			"response": []
+		},
+		{
+			"name": "提交资源申请",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{dms_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"applyOrderCode\": \"{{applyOrderCode}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{url_dms}}/api/saas-dms-admin/resourceApply/submit"
+			},
+			"response": []
+		},
+		{
+			"name": "登录合作平台",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData= JSON.parse(responseBody);\r",
+							"pm.collectionVariables.set(\"ext_token\",\"Bearer\"+jsonData.data.token.access_token);\r",
+							"pm.collectionVariables.set(\"currentUserid\",jsonData.data.token.currentUser.id);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"{{ext_username}}\",\r\n    \"password\": \"{{ext_password}}\",\r\n    \"clientId\": \"ex-operation\",\r\n    \"clientSecret\": \"Ex888888\",\r\n    \"systemCode\": \"EX000001\",\r\n    \"showValidateCodeFlag\": 1\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{url_ext}}/api/ex-operate-admin/user/passwordLogin"
+			},
+			"response": []
+		},
+		{
+			"name": "切换供应商",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData= JSON.parse(responseBody);\r",
+							"pm.collectionVariables.set(\"ext_token\",\"Bearer\"+jsonData.data.token.access_token);\r",
+							"pm.collectionVariables.set(\"currentUserid\",jsonData.data.token.currentUser.id);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{ext_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"clientId\": \"ex-operation\",\r\n    \"clientSecret\": \"Ex888888\",\r\n    \"systemCode\": \"EX000001\",\r\n    \"showValidateCodeFlag\": 1,\r\n    \"companyId\": \"{{switchEXTCompany}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{url_ext}}/api/ex-operate-admin/user/switchCompany"
+			},
+			"response": []
+		},
+		{
+			"name": "查询资源申请单详情",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData= JSON.parse(responseBody);\r",
+							"pm.collectionVariables.set(\"marketResourceQuotationRespid\",jsonData.data.marketResourceQuotationResp.id);\r",
+							"pm.collectionVariables.set(\"applyOrderId\",jsonData.data.id);\r",
+							"pm.collectionVariables.set(\"resourceQuotationItemListid\",jsonData.data.marketResourceQuotationResp.resourceQuotationItemList[0].id);\r",
+							"pm.collectionVariables.set(\"resourceQuotationItemListcontractUntaxedPrice\",jsonData.data.marketResourceQuotationResp.resourceQuotationItemList[0].contractUntaxedPrice);\r",
+							"pm.collectionVariables.set(\"resourceQuotationItemListquotationUntaxedTotalAmount\",jsonData.data.marketResourceQuotationResp.resourceQuotationItemList[0].contractUntaxedPrice*jsonData.data.marketResourceQuotationResp.resourceQuotationItemList[0].amount);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{ext_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"applyOrderCode\": \"{{applyOrderCode}}\",\r\n    \"userId\": {{currentUserid}}\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{url_ext}}/api/jv-dms-cooperation/resourceApply/queryDetailForSupplier"
+			},
+			"response": []
+		},
+		{
+			"name": "供应商编辑资源申请单",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{ext_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": {{marketResourceQuotationRespid}},\r\n    \"applyOrderId\": {{applyOrderId}},\r\n    \"quotedCode\": \"{{applyOrderCode}}\",\r\n    \"resourceQuotationItemList\": [\r\n        {\r\n            \"id\": {{resourceQuotationItemListid}},\r\n            \"quotationId\": {{marketResourceQuotationRespid}},\r\n            \"applyOrderId\": {{applyOrderId}},\r\n            \"imageUrl\": \"https://jv-product-1259380639.cos.ap-shanghai.myqcloud.com/saas-dms-admin/upload/%E5%8D%A0%E4%BD%8D%E5%9B%BE.png\",\r\n            \"marketResourceId\": 17,\r\n            \"marketResourceCode\": \"SCZY00017\",\r\n            \"marketResourceName\": \"大型设备--yx\",\r\n            \"brandName\": \"\",\r\n            \"specification\": \"\",\r\n            \"unitName\": \"个\",\r\n            \"contractUntaxedPrice\": \"{{resourceQuotationItemListcontractUntaxedPrice}}\",\r\n            \"quotationUntaxedPrice\": \"{{resourceQuotationItemListcontractUntaxedPrice}}\",\r\n            \"amount\": 1,\r\n            \"quotationUntaxedTotalAmount\": \"{{resourceQuotationItemListquotationUntaxedTotalAmount}}\",\r\n            \"createdBy\": 8357,\r\n            \"createdByName\": \"18620326047\",\r\n            \"createdTime\": \"2021-11-26 16:43:58\",\r\n            \"updatedBy\": 8357,\r\n            \"updatedTime\": \"2021-11-26 17:01:23\"\r\n        }\r\n    ],\r\n    \"attachResponseList\": [\r\n        {\r\n            \"attachName\": \"收款单 (45).xlsx\",\r\n            \"attachUrl\": \"https://image-test.fuchuang.com/lpt/jv-dms-cooperation/50c5cc14_%E6%94%B6%E6%AC%BE%E5%8D%95%20%2845%2920211126170117.xlsx\",\r\n            \"attachType\": 2\r\n        }\r\n    ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{url_ext}}/api/jv-dms-cooperation/resourceApply/editQuotation"
+			},
+			"response": []
+		},
+		{
+			"name": "供应商审批通过",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{ext_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"applyOrderCode\": \"{{applyOrderCode}}\",\r\n    \"pass\": true,\r\n    \"opinion\": \"测试\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{url_ext}}/api/jv-dms-cooperation/resourceApply/supplierAudit"
+			},
+			"response": []
+		},
+		{
+			"name": "销售内勤确认",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{dms_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"applyOrderCode\":\"{{applyOrderCode}}\",\"pass\":true,\"opinion\":\"测试\",\"rejectNode\":\"\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{url_dms}}/api/saas-dms-admin/resourceApply/dmsAudit"
+			},
+			"response": []
+		},
+		{
+			"name": "创建MAP投资",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData= JSON.parse(responseBody);\r",
+							"pm.collectionVariables.set(\"MAPid\",jsonData.data);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{fc_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"isBigCustomerRebate\": 1,\r\n    \"mapInvestmentProduct\": [\r\n        {\r\n            \"skuId\": {{MAPskuId}},\r\n            \"productMapId\": {{productMapId}},\r\n            \"annualSalesBblNum\": \"3\"\r\n        }\r\n    ],\r\n    \"annualDatumPoints\": [\r\n        \"1000.00\",\r\n        \"1000.00\",\r\n        \"1000.00\",\r\n        \"1000.00\"\r\n    ],\r\n    \"attachList\": [\r\n        {\r\n            \"fileName\": \"收款单 (45).xlsx\",\r\n            \"url\": \"https://image-test.fuchuang.com/lpt/jv-dms-backend/50c5cc14_%E6%94%B6%E6%AC%BE%E5%8D%95%20%2845%2920211126193400.xlsx\"\r\n        }\r\n    ],\r\n    \"applyCode\": \"{{applyOrderCode}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{url_erp}}/api/jv-dms-backend/mapInvestment/create"
+			},
+			"response": []
+		},
+		{
+			"name": "FC确认map投资",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{fc_token}}",
+						"type": "text"
+					}
+				],
+				"url": "{{url_erp}}/api/jv-dms-backend/mapConfirm/jv/confirm/{{MAPid}}"
+			},
+			"response": []
+		},
+		{
+			"name": "销售经理审核通过",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{fc_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"applyOrderCode\": \"{{applyOrderCode}}\",\r\n    \"pass\": true,\r\n    \"opinion\": \"测试\",\r\n    \"rejectNode\": \"\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{url_erp}}/api/jv-dms-backend/resourceApply/jvAudit"
+			},
+			"response": []
+		},
+		{
+			"name": "销售内勤确认MAP",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{dms_token}}",
+						"type": "text"
+					}
+				],
+				"url": "{{url_dms}}/api/saas-dms-admin/resourceApply//mapConfirm/{{MAPid}}"
+			},
+			"response": []
+		},
+		{
+			"name": "销售内勤确认资源申请单",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{dms_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"applyOrderCode\": \"{{applyOrderCode}}\",\r\n    \"pass\": true,\r\n    \"opinion\": \"测试\",\r\n    \"rejectNode\": \"\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{url_dms}}/api/saas-dms-admin/resourceApply/dmsDoubleConfirm"
+			},
+			"response": []
+		},
+		{
+			"name": "大区经理登录fc系统",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData= JSON.parse(responseBody);\r",
+							"pm.collectionVariables.set(\"fc_token\",\"Bearer\"+jsonData.data.token.access_token);\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"{{fc_username2}}\",\r\n    \"password\": \"{{fc_password2}}\",\r\n    \"clientId\": \"client_fc\",\r\n    \"clientSecret\": \"888888\",\r\n    \"systemCode\": \"XT000001\",\r\n    \"showValidateCodeFlag\": 1\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{url_erp}}/api/fc-uap/user/passwordLogin"
+			},
+			"response": []
+		},
+		{
+			"name": "大区经理审核通过",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{fc_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"applyOrderCode\": \"{{applyOrderCode}}\",\r\n    \"pass\": true,\r\n    \"opinion\": \"测试\",\r\n    \"rejectNode\": \"\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{url_erp}}/api/jv-dms-backend/resourceApply/jvAudit"
+			},
+			"response": []
+		},
+		{
+			"name": "市场专员登录fc系统",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData= JSON.parse(responseBody);\r",
+							"pm.collectionVariables.set(\"fc_token\",\"Bearer\"+jsonData.data.token.access_token);\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"{{fc_username3}}\",\r\n    \"password\": \"{{fc_password3}}\",\r\n    \"clientId\": \"client_fc\",\r\n    \"clientSecret\": \"888888\",\r\n    \"systemCode\": \"XT000001\",\r\n    \"showValidateCodeFlag\": 1\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{url_erp}}/api/fc-uap/user/passwordLogin"
+			},
+			"response": []
+		},
+		{
+			"name": "市场专员审核通过",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{fc_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"applyOrderCode\": \"{{applyOrderCode}}\",\r\n    \"pass\": true,\r\n    \"opinion\": \"测试\",\r\n    \"rejectNode\": \"\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{url_erp}}/api/jv-dms-backend/resourceApply/jvAudit"
+			},
+			"response": []
+		},
+		{
+			"name": "市场经理登录fc系统",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData= JSON.parse(responseBody);\r",
+							"pm.collectionVariables.set(\"fc_token\",\"Bearer\"+jsonData.data.token.access_token);\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"{{fc_username4}}\",\r\n    \"password\": \"{{fc_password4}}\",\r\n    \"clientId\": \"client_fc\",\r\n    \"clientSecret\": \"888888\",\r\n    \"systemCode\": \"XT000001\",\r\n    \"showValidateCodeFlag\": 1\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{url_erp}}/api/fc-uap/user/passwordLogin"
+			},
+			"response": []
+		},
+		{
+			"name": "市场经理审核通过",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{fc_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"applyOrderCode\": \"{{applyOrderCode}}\",\r\n    \"pass\": true,\r\n    \"opinion\": \"测试\",\r\n    \"rejectNode\": \"\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{url_erp}}/api/jv-dms-backend/resourceApply/jvAudit"
+			},
+			"response": []
+		},
+		{
+			"name": "根据资源申请单号查询交付单号",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							" var jsonData= JSON.parse(responseBody);\r",
+							"pm.collectionVariables.set(\"deliveryOrderCode\", jsonData.data.list[0].deliveryOrderCode);\r",
+							"pm.collectionVariables.set(\"deliveryOrderid\", jsonData.data.list[0].id);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{ext_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"current\": 1,\r\n    \"size\": 10,\r\n    \"deliveryOrderCode\": \"\",\r\n    \"applyOrderCode\": \"{{applyOrderCode}}\",\r\n    \"dealerId\": null,\r\n    \"customerName\": \"\",\r\n    \"customerCode\": \"\",\r\n    \"receiverName\": \"\",\r\n    \"flowStatus\": null,\r\n    \"auditStatus\": null,\r\n    \"abandon\": false,\r\n    \"queryType\": 3,\r\n    \"lengthOfStayMin\": null,\r\n    \"lengthOfStayMax\": null\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{url_ext}}/api/jv-dms-cooperation/resourceDelivery/queryPageForSupplier"
+			},
+			"response": []
+		},
+		{
+			"name": "确认交付单",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{ext_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"deliveryOrderCode\": \"{{deliveryOrderCode}}\",\r\n    \"opinion\": \"1\",\r\n    \"attachList\": []\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{url_ext}}/api/jv-dms-cooperation/resourceDelivery/supplierConfirm"
+			},
+			"response": []
+		},
+		{
+			"name": "查询交付单详情",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData= JSON.parse(responseBody);\r",
+							"pm.collectionVariables.set(\"deliveryItemRespListid\", jsonData.data.deliveryItemRespList[0].id);\r",
+							"pm.collectionVariables.set(\"deliveryItemRespListdeliveryUntaxedAmount\", jsonData.data.deliveryItemRespList[0].quotationUntaxedPrice*jsonData.data.deliveryItemRespList[0].amount);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{ext_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"userId\": \"{{currentUserid}}\",\r\n    \"deliveryOrderCode\": \"{{deliveryOrderCode}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{url_ext}}/api/jv-dms-cooperation/resourceDelivery/queryDetailForSupplier"
+			},
+			"response": []
+		},
+		{
+			"name": "编辑保存交付单",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{ext_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"deliveryOrderCode\": \"{{deliveryOrderCode}}\",\r\n    \"logisticsInfo\": \"物流信息\",\r\n    \"deliveryItems\": [\r\n        {\r\n            \"id\": \"{{deliveryItemRespListid}}\",\r\n            \"deliveryUntaxedAmount\": \"{{deliveryItemRespListdeliveryUntaxedAmount}}\"\r\n        }\r\n    ],\r\n    \"attachList\": [\r\n        {\r\n            \"attachName\": \"u=2853553659,1775735885&fm=26&gp=0.jpg\",\r\n            \"attachUrl\": \"https://image-test.fuchuang.com/stg/jv-dms-cooperation/8a76fd34_u%3D2853553659%2C1775735885%26fm%3D26%26gp%3D020220104172217.jpg\",\r\n            \"attachType\": 1\r\n        }\r\n    ],\r\n    \"remark\": null\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{url_ext}}/api/jv-dms-cooperation/resourceDelivery/addAttachForSupplier"
+			},
+			"response": []
+		},
+		{
+			"name": "供应商审批通过",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{ext_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"deliveryOrderCode\": \"{{deliveryOrderCode}}\",\r\n    \"opinion\": \"1\",\r\n    \"attachList\": [],\r\n    \"pass\": true\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{url_ext}}/api/jv-dms-cooperation/resourceDelivery/supplierPass"
+			},
+			"response": []
+		},
+		{
+			"name": "销售内勤审批通过",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{dms_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"deliveryOrderCode\": \"{{deliveryOrderCode}}\",\r\n    \"pass\": true,\r\n    \"opinion\": \"1\",\r\n    \"attachList\": []\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{url_dms}}/api/saas-dms-admin/resourceDelivery/assistantAudit"
+			},
+			"response": []
+		},
+		{
+			"name": "登录fc系统",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData= JSON.parse(responseBody);\r",
+							"pm.collectionVariables.set(\"fc_token\",\"Bearer\"+jsonData.data.token.access_token);\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"{{fc_username1}}\",\r\n    \"password\": \"{{fc_password1}}\",\r\n    \"clientId\": \"client_fc\",\r\n    \"clientSecret\": \"888888\",\r\n    \"systemCode\": \"XT000001\",\r\n    \"showValidateCodeFlag\": 1\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{url_erp}}/api/fc-uap/user/passwordLogin"
+			},
+			"response": []
+		},
+		{
+			"name": "销售经理审批通过",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{fc_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"deliveryOrderCode\": \"{{deliveryOrderCode}}\",\r\n    \"pass\": true,\r\n    \"opinion\": \"1\",\r\n    \"attachList\": []\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{url_erp}}/api/jv-dms-backend/delivery/jvAudit"
+			},
+			"response": []
+		},
+		{
+			"name": "大区经理登录fc系统",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData= JSON.parse(responseBody);\r",
+							"pm.collectionVariables.set(\"fc_token\",\"Bearer\"+jsonData.data.token.access_token);\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"{{fc_username2}}\",\r\n    \"password\": \"{{fc_password2}}\",\r\n    \"clientId\": \"client_fc\",\r\n    \"clientSecret\": \"888888\",\r\n    \"systemCode\": \"XT000001\",\r\n    \"showValidateCodeFlag\": 1\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{url_erp}}/api/fc-uap/user/passwordLogin"
+			},
+			"response": []
+		},
+		{
+			"name": "大区经理审批通过",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{fc_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"deliveryOrderCode\": \"{{deliveryOrderCode}}\",\r\n    \"pass\": true,\r\n    \"opinion\": \"1\",\r\n    \"attachList\": []\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{url_erp}}/api/jv-dms-backend/delivery/jvAudit"
+			},
+			"response": []
+		},
+		{
+			"name": "经销商上传发票",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{dms_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"attachReqs\": [\r\n        {\r\n            \"attachName\": \"cc39eb43-8576-479f-af1f-b09d3d7c8c0b.jpg\",\r\n            \"attachUrl\": \"https://image-test.fuchuang.com/stg/saas-dms-admin/4c75456e_cc39eb43-8576-479f-af1f-b09d3d7c8c0b20220104185525.jpg\"\r\n        }\r\n    ],\r\n    \"invoiceNumber\": \"{{invoiceNumber}}\",\r\n    \"untaxedInvoiceMoney\": \"{{deliveryItemRespListdeliveryUntaxedAmount}}\",\r\n    \"remark\": \"\",\r\n    \"taxRateId\":25,\r\n    \"invoiceType\":2,\r\n    \"taxRate\":6,\r\n    \"deliveryOrderId\": \"{{deliveryOrderid}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{url_dms}}/api/saas-dms-admin/resourceDelivery/saveInvoice"
+			},
+			"response": []
+		},
+		{
+			"name": "经销商确认",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{dms_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"deliveryOrderCode\": \"{{deliveryOrderCode}}\",\r\n    \"pass\": true,\r\n    \"opinion\": \"1\",\r\n    \"attachList\": []\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{url_dms}}/api/saas-dms-admin/resourceDelivery/assistantAudit"
+			},
+			"response": []
+		},
+		{
+			"name": "市场专员登录fc系统",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData= JSON.parse(responseBody);\r",
+							"pm.collectionVariables.set(\"fc_token\",\"Bearer\"+jsonData.data.token.access_token);\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"{{fc_username3}}\",\r\n    \"password\": \"{{fc_password3}}\",\r\n    \"clientId\": \"client_fc\",\r\n    \"clientSecret\": \"888888\",\r\n    \"systemCode\": \"XT000001\",\r\n    \"showValidateCodeFlag\": 1\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{url_erp}}/api/fc-uap/user/passwordLogin"
+			},
+			"response": []
+		},
+		{
+			"name": "市场专员审批通过",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{fc_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"deliveryOrderCode\": \"{{deliveryOrderCode}}\",\r\n    \"pass\": true,\r\n    \"opinion\": \"1\",\r\n    \"attachList\": []\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{url_erp}}/api/jv-dms-backend/delivery/jvAudit"
+			},
+			"response": []
+		},
+		{
+			"name": "经销商付款材料寄出",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{dms_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"deliveryOrderCode\": \"{{deliveryOrderCode}}\",\r\n    \"opinion\": \"1\",\r\n    \"attachList\": [],\r\n    \"pass\": true\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{url_dms}}/api/saas-dms-admin/resourceDelivery/assistantAudit"
+			},
+			"response": []
+		},
+		{
+			"name": "市场专员材料提交",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{fc_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"deliveryOrderCode\": \"{{deliveryOrderCode}}\",\r\n    \"pass\": true,\r\n    \"opinion\": \"1\",\r\n    \"attachList\": []\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{url_erp}}/api/jv-dms-backend/delivery/jvAudit"
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"pm.test(\"Status code is 200\", function () {",
+					"    pm.response.to.have.status(200);",
+					"}); ",
+					"var jsonData= JSON.parse(responseBody);",
+					"tests[\"断言接口返回code=10000\"]=jsonData.code===10000;"
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "dms_token",
+			"value": ""
+		},
+		{
+			"key": "companyId",
+			"value": ""
+		},
+		{
+			"key": "employeeid",
+			"value": ""
+		},
+		{
+			"key": "saleOrgCode1",
+			"value": ""
+		},
+		{
+			"key": "saleOrgName1",
+			"value": ""
+		},
+		{
+			"key": "saleOrgCode2",
+			"value": ""
+		},
+		{
+			"key": "saleOrgName2",
+			"value": ""
+		},
+		{
+			"key": "saleOrgCode3",
+			"value": ""
+		},
+		{
+			"key": "saleOrgName3",
+			"value": ""
+		},
+		{
+			"key": "creditCode",
+			"value": ""
+		},
+		{
+			"key": "storeName",
+			"value": ""
+		},
+		{
+			"key": "applyNo",
+			"value": ""
+		},
+		{
+			"key": "Addressid",
+			"value": ""
+		}
+	]
+}
